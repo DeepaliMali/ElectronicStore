@@ -2,6 +2,7 @@ package com.deepali.electronicstore.service.impl;
 import com.deepali.electronicstore.controllers.UserController;
 import com.deepali.electronicstore.dto.UserDto;
 import com.deepali.electronicstore.entities.User;
+import com.deepali.electronicstore.exception.ResourceNotFoundException;
 import com.deepali.electronicstore.repository.UserRepository;
 import com.deepali.electronicstore.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -52,7 +53,7 @@ public class userServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto, String userId) {
 
         logger.info("Initializing updateUser method of Service for id:"+userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with this id"));user.setName(userDto.getName());
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id"));user.setName(userDto.getName());
         user.setAbout(userDto.getAbout());
         user.setGender(userDto.getGender());
         user.setPassword(userDto.getPassword());
@@ -72,7 +73,7 @@ public class userServiceImpl implements UserService {
     public void deleteUser(String userId) {
 
         logger.info("Initializing deleteUser method of Service for id:"+userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with this id"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id"));
         userRepository.delete(user);
         logger.info("Execution completed of deleteUser method of service for id:"+userId);
 
@@ -101,7 +102,7 @@ public class userServiceImpl implements UserService {
     public UserDto getUserById(String userId) {
 
         logger.info("Initializing getUserById method of service for id:"+userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with this id"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id"));
         logger.info("Execution completed of getUserById method of service for id:"+userId);
         return mapper.map(user,UserDto.class);
     }
@@ -114,7 +115,7 @@ public class userServiceImpl implements UserService {
     public UserDto getUserByEmail(String email) {
 
         logger.info("Initializing getUserByEmail method of service for email:"+email);
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with this email"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with this email"));
         logger.info("Execution completed of getUserByEmail method of service for id:"+email);
         return mapper.map(user,UserDto.class);
     }
