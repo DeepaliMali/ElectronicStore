@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private Logger logger=LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private  Logger logger=LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     //handler resource not found exception
 

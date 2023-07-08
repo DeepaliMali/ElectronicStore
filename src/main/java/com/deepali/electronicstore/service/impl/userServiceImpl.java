@@ -53,7 +53,8 @@ public class userServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto, String userId) {
 
         logger.info("Initializing updateUser method of Service for id:"+userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id"));user.setName(userDto.getName());
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id"));
+        user.setName(userDto.getName());
         user.setAbout(userDto.getAbout());
         user.setGender(userDto.getGender());
         user.setPassword(userDto.getPassword());
