@@ -1,6 +1,7 @@
 package com.deepali.electronicstore.service;
 
 
+import com.deepali.electronicstore.dto.PageableResponse;
 import com.deepali.electronicstore.dto.UserDto;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface UserService {
     void deleteUser(String userId);
 
     //get all users
-    List<UserDto> getAllUsers();
+    PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     //get single user by id
     UserDto getUserById(String userId);

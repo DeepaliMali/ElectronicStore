@@ -1,5 +1,6 @@
 package com.deepali.electronicstore.controllers;
 
+import com.deepali.electronicstore.dto.PageableResponse;
 import com.deepali.electronicstore.dto.UserDto;
 import com.deepali.electronicstore.paylods.ApiResponseMessage;
 import com.deepali.electronicstore.paylods.AppConstants;
@@ -76,10 +77,16 @@ public class UserController {
      */
     //getall
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers()
+    public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
+            @RequestParam(value="pageNumber",defaultValue = "0",required = false) int pageNumber,
+            @RequestParam(value = "PageSize",defaultValue = "10",required = false) int pageSize,
+            @RequestParam(value="sortBy",defaultValue = "name",required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDir
+
+    )
     {
         logger.info("Initializing getAllUsers method");
-        List<UserDto> allUsers = userService.getAllUsers();
+        PageableResponse<UserDto> allUsers = userService.getAllUsers(pageNumber,pageSize,sortBy,sortDir);
         logger.info("Execution completed of method getAllUser");
         return new ResponseEntity<>(allUsers,HttpStatus.OK);
 

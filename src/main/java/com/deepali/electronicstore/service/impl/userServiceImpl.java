@@ -1,14 +1,21 @@
 package com.deepali.electronicstore.service.impl;
 import com.deepali.electronicstore.controllers.UserController;
+import com.deepali.electronicstore.dto.PageableResponse;
 import com.deepali.electronicstore.dto.UserDto;
 import com.deepali.electronicstore.entities.User;
 import com.deepali.electronicstore.exception.ResourceNotFoundException;
+import com.deepali.electronicstore.helper.Helper;
+import com.deepali.electronicstore.paylods.AppConstants;
 import com.deepali.electronicstore.repository.UserRepository;
 import com.deepali.electronicstore.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -86,13 +93,19 @@ public class userServiceImpl implements UserService {
      * @apiNote Retrieves list of all users from Database
      */
     @Override
-    public List<UserDto> getAllUsers() {
+    public PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir) {
 
         logger.info("Initializing getAllUsers method of Service");
-        List<User> users = userRepository.findAll();
-        List<UserDto> dtoList = users.stream().map(user -> mapper.map(user,UserDto.class)).collect(Collectors.toList());
+
+        Sort sort = (sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
+
+        //pageNumber starts from 0
+        Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
+        Page<User> page = userRepository.findAll(pageable);
+        PageableResponse<UserDto> pageableResponse = Helper.getPageableResponse(page, UserDto.class);
         logger.info("Execution completed of getAllUsers method of service");
-        return dtoList;
+        return pageableResponse;
+
     }
 
     /**
