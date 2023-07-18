@@ -1,18 +1,28 @@
 package com.deepali.electronicstore.controllers;
 
+import com.deepali.electronicstore.dto.ImageResponse;
 import com.deepali.electronicstore.dto.PageableResponse;
+import com.deepali.electronicstore.dto.ProductDto;
 import com.deepali.electronicstore.dto.UserDto;
 import com.deepali.electronicstore.paylods.ApiResponseMessage;
 import com.deepali.electronicstore.paylods.AppConstants;
+import com.deepali.electronicstore.service.FileService;
 import com.deepali.electronicstore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -21,6 +31,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${user.profile.image.path}")
+    private String imageUploadPath;
 
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
@@ -81,7 +97,7 @@ public class UserController {
             @RequestParam(value="pageNumber",defaultValue = "0",required = false) int pageNumber,
             @RequestParam(value = "PageSize",defaultValue = "10",required = false) int pageSize,
             @RequestParam(value="sortBy",defaultValue = "name",required = false) String sortBy,
-            @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDir
+            @RequestParam(value = "sortDir",defaultValue ="asc",required = false) String sortDir
 
     )
     {
@@ -136,5 +152,34 @@ public class UserController {
         logger.info("Execution completed of method searchUser for keyword"+keywords);
         return new ResponseEntity<>(userDtos,HttpStatus.OK);
     }
+
+    //upload user image
+    @PostMapping("/image/{userId}")
+    public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage") MultipartFile image,
+                                                     @PathVariable String userId) throws IOException {
+        String imageName = fileService.uploadFile(image, imageUploadPath);
+
+        UserDto user = userService.getUserById(userId);
+        user.setImageName(imageName);
+
+        UserDto userDto = userService.updateUser(user,userId);
+
+        ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).message("Image Uploaded Successfully").build();
+
+        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+    }
+
+    //serve image
+    @GetMapping(value = "image/{userId}")
+    public  void serveProductImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
+        UserDto user = userService.getUserById(userId);
+        logger.info("User Image:{}",user.getImageName());
+        InputStream resource = fileService.getResource(imageUploadPath, user.getImageName());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource,response.getOutputStream());
+
+
+    }
+
 
 }
