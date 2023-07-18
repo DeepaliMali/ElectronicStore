@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = mapper.map(categoryDto, Category.class);
         Category savedCategory = categoryRepository.save(category);
         CategoryDto categoryDto1 = mapper.map(savedCategory, CategoryDto.class);
-        logger.info("Execution completed of method create in CategoryServiceImpl ");
+        logger.info("Execution completed of create method in CategoryServiceImpl ");
         return categoryDto1;
     }
 
@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category updatedCategory = categoryRepository.save(category);
 
         CategoryDto categoryDto1 = mapper.map(updatedCategory, CategoryDto.class);
-        logger.info("Execution completed of method update in CategoryServiceImpl ");
+        logger.info("Execution completed of  update method in CategoryServiceImpl ");
         return categoryDto1;
     }
 
@@ -87,7 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
         logger.info("Initializing delete method of CategoryServiceImpl");
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with given id!!"));
         categoryRepository.delete(category);
-        logger.info("Execution completed of method delete in CategoryServiceImpl");
+        logger.info("Execution completed of  delete  method in CategoryServiceImpl");
 
     }
 
@@ -101,7 +101,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         logger.info("Initializing getAll method of CategoryServiceImpl");
 
-        Sort sort=(sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
+        Sort sort = (sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
         Pageable pageable= PageRequest.of(pageNumber,pageSize);
 
         Page<Category> page = categoryRepository.findAll(pageable);
