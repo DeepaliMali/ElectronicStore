@@ -36,6 +36,13 @@ public class Product {
 
     private boolean stock;
 
+    private String productImageName;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="category_id")
+    private Category category;
+
+
 
 
 
