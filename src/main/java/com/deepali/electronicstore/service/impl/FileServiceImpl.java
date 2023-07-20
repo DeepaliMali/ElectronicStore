@@ -18,9 +18,14 @@ public class FileServiceImpl implements FileService {
 
     private Logger logger= LoggerFactory.getLogger(FileServiceImpl.class);
 
+    /**
+     * @author Deepali
+     * @apiNote uploads user image
+     */
     @Override
     public String uploadFile(MultipartFile file, String path) throws IOException {
 
+        logger.info("Initializing uploadFile method of FileServiceImpl");
         //abc.png
         String originalFilename = file.getOriginalFilename();
         logger.info("Filename:{}",originalFilename);
@@ -55,13 +60,20 @@ public class FileServiceImpl implements FileService {
             throw new BadApiRequest("File with this "+extension + "not allowed");
 
         }
+
     }
 
+    /**
+     * @author Deepali
+     * @apiNote fetch the path of file
+     */
     @Override
     public InputStream getResource(String path, String name) throws FileNotFoundException {
 
+        logger.info("Initializing getResource method of FileServiceImpl");
         String fullPath=path+File.separator+name;
         InputStream inputStream=new FileInputStream(fullPath);
+        logger.info("Execution Completed of method getResource");
         return inputStream;
     }
 }

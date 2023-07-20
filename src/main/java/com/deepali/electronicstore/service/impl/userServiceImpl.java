@@ -12,12 +12,20 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.IIOException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,6 +38,9 @@ public class userServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Value("${user.profile.image.path}")
+    private String imagePath;
 
     private static final Logger logger= LoggerFactory.getLogger(userServiceImpl.class);
 
@@ -82,7 +93,28 @@ public class userServiceImpl implements UserService {
 
         logger.info("Initializing deleteUser method of Service for id:"+userId);
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with this id"));
+
+        //delete user profile image
+        String fullPath = imagePath + user.getImageName();
+
+        try
+        {
+            Path path=Paths.get(fullPath);
+            Files.delete(path);
+
+        }
+        catch (NoSuchFileException ex){
+
+            logger.info("User Image not Found in Folder");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //delete user
         userRepository.delete(user);
+
         logger.info("Execution completed of deleteUser method of service for id:"+userId);
 
     }

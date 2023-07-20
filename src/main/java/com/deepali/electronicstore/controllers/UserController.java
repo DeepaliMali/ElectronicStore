@@ -94,10 +94,10 @@ public class UserController {
     //getall
     @GetMapping
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
-            @RequestParam(value="pageNumber",defaultValue = "0",required = false) int pageNumber,
-            @RequestParam(value = "PageSize",defaultValue = "10",required = false) int pageSize,
-            @RequestParam(value="sortBy",defaultValue = "name",required = false) String sortBy,
-            @RequestParam(value = "sortDir",defaultValue ="asc",required = false) String sortDir
+            @RequestParam(value="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) int pageNumber,
+            @RequestParam(value = "PageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value="sortBy",defaultValue = AppConstants.SORT_BY,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue =AppConstants.SORT_DIR,required = false) String sortDir
 
     )
     {
@@ -153,9 +153,14 @@ public class UserController {
         return new ResponseEntity<>(userDtos,HttpStatus.OK);
     }
 
+
+    /**
+     * @author Deepali
+     * @apiNote Uploads user profile image
+     */
     //upload user image
     @PostMapping("/image/{userId}")
-    public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage") MultipartFile image,
+    public ResponseEntity<ImageResponse> uploadUserImage(@RequestPart("userImage") MultipartFile image,
                                                      @PathVariable String userId) throws IOException {
         String imageName = fileService.uploadFile(image, imageUploadPath);
 
@@ -169,9 +174,14 @@ public class UserController {
         return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
+    /**
+     *
+     * @author Deepali
+     * @apiNote Serves User Profile image
+     */
     //serve image
     @GetMapping(value = "image/{userId}")
-    public  void serveProductImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
+    public  void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
         UserDto user = userService.getUserById(userId);
         logger.info("User Image:{}",user.getImageName());
         InputStream resource = fileService.getResource(imageUploadPath, user.getImageName());
