@@ -1,5 +1,6 @@
 package com.deepali.electronicstore.dto;
 
+import com.deepali.electronicstore.entities.Category;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -33,6 +34,8 @@ public class ProductDto {
     private boolean stock;
 
     private String productImageName;
+
+    private CategoryDto category;
 
 
 

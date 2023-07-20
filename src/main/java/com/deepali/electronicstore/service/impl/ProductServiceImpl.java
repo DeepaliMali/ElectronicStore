@@ -2,9 +2,11 @@ package com.deepali.electronicstore.service.impl;
 
 import com.deepali.electronicstore.dto.PageableResponse;
 import com.deepali.electronicstore.dto.ProductDto;
+import com.deepali.electronicstore.entities.Category;
 import com.deepali.electronicstore.entities.Product;
 import com.deepali.electronicstore.exception.ResourceNotFoundException;
 import com.deepali.electronicstore.helper.Helper;
+import com.deepali.electronicstore.repository.CategoryRepository;
 import com.deepali.electronicstore.repository.ProductRepository;
 import com.deepali.electronicstore.service.ProductService;
 import org.modelmapper.ModelMapper;
@@ -13,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +34,14 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    /**
+     *
+     * @author Deepali
+     * @apiNote Creates new Product in database
+     */
     @Override
     public ProductDto create(ProductDto productDto) {
 
@@ -47,6 +59,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+    /**
+     * @author Deepali
+     * @apiNote Updates existing Product from database
+     */
     @Override
     public ProductDto update(ProductDto productDto, String productId) {
 
@@ -70,6 +86,10 @@ public class ProductServiceImpl implements ProductService {
         return mapper.map(updatedProduct,ProductDto.class);
     }
 
+    /**
+     * @author Deepali
+     * @apiNote Deletes Product from database
+     */
     @Override
     public void delete(String productId) {
 
@@ -80,6 +100,11 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    /**
+     *
+     * @author Deepali
+     * @apiNote Fetch the product from database
+     */
     @Override
     public ProductDto get(String productId) {
 
@@ -89,6 +114,11 @@ public class ProductServiceImpl implements ProductService {
 
         return mapper.map(product,ProductDto.class);
     }
+
+    /**
+     * @author Deepali
+     * @apiNote Fetch all Products from Database
+     */
 
     @Override
     public PageableResponse<ProductDto> getAll(int pageNumber,int pageSize,String sortBy,String sortDir) {
@@ -104,6 +134,10 @@ public class ProductServiceImpl implements ProductService {
         return Helper.getPageableResponse(page,ProductDto.class);
     }
 
+    /**
+     * @author Deepali
+     * @apiNote Fetch all live Products from database
+     */
     @Override
     public PageableResponse<ProductDto> getAllLive(int pageNumber,int pageSize,String sortBy,String sortDir) {
 
@@ -119,6 +153,10 @@ public class ProductServiceImpl implements ProductService {
         return Helper.getPageableResponse(page,ProductDto.class);
     }
 
+    /**
+     * @author Deepali
+     * @apiNote Search the Products from by specified Title
+     */
     @Override
     public PageableResponse<ProductDto> searchByTitle(String subTitle,int pageNumber,int pageSize,String sortBy,String sortDir) {
 
@@ -133,4 +171,64 @@ public class ProductServiceImpl implements ProductService {
 
         return Helper.getPageableResponse(page,ProductDto.class);
     }
+
+    //create product with category
+    /**
+     * @author Deepali
+     * @apiNote Creates Products with Category
+     */
+    @Override
+    public ProductDto createWithCategory(ProductDto productDto, String categoryId) {
+
+        logger.info("Initializing crateWithCategory method of ProductServiceImpl");
+        //fetch the category
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with given id"));
+
+        //product id
+        String productId = UUID.randomUUID().toString();
+        productDto.setProductId(productId);
+
+        //added date
+        productDto.setAddedDate(new Date());
+        Product product = mapper.map(productDto, Product.class);
+        product.setCategory(category);
+        Product savedProduct = productRepository.save(product);
+        logger.info("Execution completed of crateWithCategory method in ProductServiceImpl");
+        return mapper.map(savedProduct,ProductDto.class);
+    }
+
+    /**
+     * @author Deepali
+     * @apiNote update Products by given Category
+     */
+    @Override
+    public ProductDto updateCategory(String productId, String categoryId) {
+
+        logger.info("Initializing updateCategory method of ProductServiceImpl");
+        //product fetch
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product with this id not found!!"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not Found!!"));
+        product.setCategory(category);
+        Product savedProduct = productRepository.save(product);
+        logger.info("Execution completed of updateCategory method in ProductServiceImpl");
+        return mapper.map(savedProduct,ProductDto.class);
+    }
+
+    /**
+     * @author Deepali
+     * @apiNote Fetch all Products of given Category
+     */
+    @Override
+    public PageableResponse<ProductDto> getAllOfCategory(String categoryId,int pageNumber,int pageSize,String sortBy,String sortDir) {
+
+        logger.info("Initializing getAllOfCategory method of ProductServiceImpl");
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not Found!!"));
+        Sort sort=(sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
+        Pageable pageable=PageRequest.of(pageNumber,pageSize,sort);
+        Page<Product> page = productRepository.findByCategory(category,pageable);
+        logger.info("Execution completed of getAllOfCategory method in ProductServiceImpl");
+        return Helper.getPageableResponse(page,ProductDto.class);
+    }
+
+
 }

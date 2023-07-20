@@ -38,6 +38,11 @@ public class ProductController {
     private ProductService productService;
 
     //create
+
+    /**
+     * @author Deepali
+     * @apiNote Creates new Products in Database
+     */
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto)
     {
@@ -50,6 +55,11 @@ public class ProductController {
     
     
     //update
+
+    /**
+     * @author Deepali
+     * @apiNote Updates existing Products available in database
+     */
     @PutMapping("{productId}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable String productId, @RequestBody ProductDto productDto)
     {
@@ -62,6 +72,11 @@ public class ProductController {
 
 
     //delete
+
+    /**
+     * @author Deepali
+     * @apiNote Deletes Products from Database
+     */
     @DeleteMapping("/{productId}")
     public ResponseEntity<ApiResponseMessage> delete(@PathVariable String productId)
     {
@@ -74,6 +89,11 @@ public class ProductController {
 
 
     //get single
+
+    /**
+     * @author Deepali
+     * @apiNote Fetch Product from Database of specified id
+     */
     @GetMapping("{productId}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable String productId)
     {
@@ -86,12 +106,17 @@ public class ProductController {
 
     
     //getAll
+
+    /**
+     * @author Deepali
+     * @apiNote Fetch all Products from database
+     */
     @GetMapping
     public ResponseEntity<PageableResponse<ProductDto>> getAll(
-            @RequestParam(value="pageNumber",defaultValue = "0",required = false) int pageNumber,
-            @RequestParam(value = "PageSize",defaultValue = "10",required = false) int pageSize,
-            @RequestParam(value="sortBy",defaultValue = "name",required = false) String sortBy,
-            @RequestParam(value = "sortDir",defaultValue ="asc",required = false) String sortDir)
+            @RequestParam(value="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) int pageNumber,
+            @RequestParam(value = "PageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value="sortBy",defaultValue = AppConstants.SORT_BY_TITLE,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue =AppConstants.SORT_DIR,required = false) String sortDir)
     {
         logger.info("Initializing getAll method of ProductController");
         PageableResponse<ProductDto> pageableResponse = productService.getAll(pageNumber, pageSize, sortBy, sortDir);
@@ -100,12 +125,17 @@ public class ProductController {
     }
     
     //getAll live
+
+    /**
+     * @author Deepali
+     * @apiNote Fetch all live Products from database
+     */
     @GetMapping("/live")
     public ResponseEntity<PageableResponse<ProductDto>> getAllLive(
-            @RequestParam(value="pageNumber",defaultValue = "0",required = false) int pageNumber,
-            @RequestParam(value = "PageSize",defaultValue = "10",required = false) int pageSize,
-            @RequestParam(value="sortBy",defaultValue = "name",required = false) String sortBy,
-            @RequestParam(value = "sortDir",defaultValue ="asc",required = false) String sortDir)
+            @RequestParam(value="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) int pageNumber,
+            @RequestParam(value = "PageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value="sortBy",defaultValue = AppConstants.SORT_BY_TITLE,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue =AppConstants.SORT_DIR,required = false) String sortDir)
     {
         logger.info("Initializing getAllLive method of ProductController");
         PageableResponse<ProductDto> pageableResponse = productService.getAllLive(pageNumber, pageSize, sortBy, sortDir);
@@ -117,13 +147,17 @@ public class ProductController {
 
     //search
 
+    /**
+     * @author Deepali
+     * @apiNote Search Products from Database by specified keyword
+     */
     @GetMapping("/search/{query}")
     public ResponseEntity<PageableResponse<ProductDto>> searchProducts(
             @PathVariable String query,
-            @RequestParam(value="pageNumber",defaultValue = "0",required = false) int pageNumber,
-            @RequestParam(value = "PageSize",defaultValue = "10",required = false) int pageSize,
-            @RequestParam(value="sortBy",defaultValue = "name",required = false) String sortBy,
-            @RequestParam(value = "sortDir",defaultValue ="asc",required = false) String sortDir)
+            @RequestParam(value="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) int pageNumber,
+            @RequestParam(value = "PageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value="sortBy",defaultValue = AppConstants.SORT_BY_TITLE,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue =AppConstants.SORT_DIR,required = false) String sortDir)
     {
         logger.info("Initializing searchProducts method of ProductController");
         PageableResponse<ProductDto> pageableResponse = productService.searchByTitle(query,pageNumber, pageSize, sortBy, sortDir);
@@ -133,29 +167,45 @@ public class ProductController {
 
 
     //upload image
+
+    /**
+     * @author Deepali
+     * @apiNote Uploads Product image
+     */
     @PostMapping("/image/{productId}")
     public ResponseEntity<ImageResponse> uploadImage(@PathVariable String productId,
                                                      @RequestParam("productImage") MultipartFile image) throws IOException {
+        logger.info("Initializing uploadImage method of ProductController");
         String fileName = fileService.uploadFile(image, imagePath);
         ProductDto productDto = productService.get(productId);
         productDto.setProductImageName(fileName);
         ProductDto updatedProduct = productService.update(productDto, productId);
-
         ImageResponse response = ImageResponse.builder().imageName(updatedProduct.getProductImageName()).message("Product Image is Successfully Uploaded !!").status(HttpStatus.CREATED).success(true).build();
+        logger.info("Execution completed of method uploadProductImage");
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
     //serve image
+
+    /**
+     * @author Deepali
+     * @apiNote Serves User image
+     */
     @GetMapping(value = "image/{productId}")
     public  void serveProductImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
+
+        logger.info("Initializing ServeProductImage method of ProductController");
         ProductDto productDto = productService.get(productId);
         logger.info("Product Image:{}",productDto.getProductImageName());
         InputStream resource = fileService.getResource(imagePath, productDto.getProductImageName());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
+        logger.info("Execution completed of method serveProductImage");
 
 
     }
+
+
 
 
 
