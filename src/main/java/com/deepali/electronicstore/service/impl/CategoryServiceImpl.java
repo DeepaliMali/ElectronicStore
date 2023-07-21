@@ -102,7 +102,7 @@ public class CategoryServiceImpl implements CategoryService {
         logger.info("Initializing getAll method of CategoryServiceImpl");
 
         Sort sort = (sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
 
         Page<Category> page = categoryRepository.findAll(pageable);
 

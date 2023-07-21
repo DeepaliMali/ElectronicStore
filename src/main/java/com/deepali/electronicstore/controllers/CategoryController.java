@@ -1,22 +1,28 @@
 package com.deepali.electronicstore.controllers;
 
-import com.deepali.electronicstore.dto.CategoryDto;
-import com.deepali.electronicstore.dto.PageableResponse;
-import com.deepali.electronicstore.dto.ProductDto;
+import com.deepali.electronicstore.dto.*;
 import com.deepali.electronicstore.paylods.ApiResponseMessage;
 import com.deepali.electronicstore.paylods.AppConstants;
 import com.deepali.electronicstore.service.CategoryService;
+import com.deepali.electronicstore.service.FileService;
 import com.deepali.electronicstore.service.ProductService;
 import com.deepali.electronicstore.service.impl.CategoryServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.ApplicationScope;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/categories")
@@ -29,6 +35,12 @@ public class CategoryController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${category.image.path}")
+    private String imageUploadPath;
 
     //create
 
@@ -159,7 +171,7 @@ public class CategoryController {
     public ResponseEntity<PageableResponse<ProductDto>> getProductsOfCategory(
             @PathVariable String categoryId,
             @RequestParam(value="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) int pageNumber,
-            @RequestParam(value = "PageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value = "pageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
             @RequestParam(value="sortBy",defaultValue = AppConstants.SORT_BY_TITLE,required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue =AppConstants.SORT_DIR,required = false) String sortDir)
     {
@@ -168,6 +180,51 @@ public class CategoryController {
         logger.info("Execution Completed of method getProductsWithCategory");
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
+    /**
+     * @author Deepali
+     * @apiNote Uploads Category Cover image
+     */
+    //upload Category image
+    @PostMapping("/image/{categoryId}")
+    public ResponseEntity<ImageResponse> uploadCategoryImage(@RequestPart("categoryImage") MultipartFile image,
+                                                         @PathVariable String categoryId) throws IOException {
+
+        logger.info("Initializing uploadCategoryImage method of UserController");
+        String imageName = fileService.uploadFile(image, imageUploadPath);
+
+        CategoryDto category = categoryService.get(categoryId);
+        category.setCoverImage(imageName);
+
+        CategoryDto categoryDto = categoryService.update(category, categoryId);
+
+        ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).message("Image Uploaded Successfully").build();
+        logger.info("Execution completed of uploadCategoryImage method");
+        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+    }
+
+    /**
+     *
+     * @author Deepali
+     * @apiNote Serves Category Cover image
+     */
+    //serve image
+    @GetMapping(value = "image/{categoryId}")
+    public  void serveCategoryImage(@PathVariable String categoryId, HttpServletResponse response) throws IOException {
+
+        logger.info("Initializing serveCategoryImage method of UserController");
+        CategoryDto category = categoryService.get(categoryId);
+        logger.info("User Image:{}",category.getCoverImage());
+        InputStream resource = fileService.getResource(imageUploadPath, category.getCoverImage());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource,response.getOutputStream());
+        logger.info("Execution completed of serveCategoryImage method");
+
+
+
+    }
+
+
 
 }
 
