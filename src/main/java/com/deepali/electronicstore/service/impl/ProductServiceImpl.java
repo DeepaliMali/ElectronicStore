@@ -126,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
         logger.info("Initializing getAll method of ProductServiceImpl");
         Sort sort=(sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
 
-        PageRequest pageable = PageRequest.of(pageNumber, pageSize);
+        PageRequest pageable = PageRequest.of(pageNumber, pageSize,sort);
         Page<Product> page = productRepository.findAll(pageable);
 
         logger.info("Execution completed of getAll method in ProductServiceImpl");

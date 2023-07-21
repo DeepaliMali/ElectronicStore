@@ -95,7 +95,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) int pageNumber,
-            @RequestParam(value = "PageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value = "pageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) int pageSize,
             @RequestParam(value="sortBy",defaultValue = AppConstants.SORT_BY,required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue =AppConstants.SORT_DIR,required = false) String sortDir
 
@@ -162,6 +162,7 @@ public class UserController {
     @PostMapping("/image/{userId}")
     public ResponseEntity<ImageResponse> uploadUserImage(@RequestPart("userImage") MultipartFile image,
                                                      @PathVariable String userId) throws IOException {
+        logger.info("Initializing uploadUserImage method of UserController");
         String imageName = fileService.uploadFile(image, imageUploadPath);
 
         UserDto user = userService.getUserById(userId);
@@ -170,7 +171,7 @@ public class UserController {
         UserDto userDto = userService.updateUser(user,userId);
 
         ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).message("Image Uploaded Successfully").build();
-
+        logger.info("Execution completed of uploadUserImage method");
         return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
@@ -182,11 +183,15 @@ public class UserController {
     //serve image
     @GetMapping(value = "image/{userId}")
     public  void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
+
+        logger.info("Initializing serveUserImage method of UserController");
         UserDto user = userService.getUserById(userId);
         logger.info("User Image:{}",user.getImageName());
         InputStream resource = fileService.getResource(imageUploadPath, user.getImageName());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
+        logger.info("Execution completed of serveUserImage method");
+
 
 
     }
