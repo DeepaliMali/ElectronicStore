@@ -20,7 +20,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * @author Deepali
-     * @apiNote uploads user image
+     * @implNote  uploads user image
      */
     @Override
     public String uploadFile(MultipartFile file, String path) throws IOException {
@@ -65,7 +65,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * @author Deepali
-     * @apiNote fetch the path of file
+     * @implNote  fetch the path of file
      */
     @Override
     public InputStream getResource(String path, String name) throws FileNotFoundException {

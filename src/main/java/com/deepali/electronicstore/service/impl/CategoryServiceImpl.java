@@ -56,12 +56,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     /**
      * @author Deepali
-     * @apiNote This method updates existing Category
+     * @implNote  This method updates existing Category
      *
      */
     public CategoryDto update(CategoryDto categoryDto, String categoryId) {
 
-        logger.info("Initializing update method in CategoryServiceImpl");
+        logger.info("Initializing update method in CategoryServiceImpl for id"+categoryId);
         //get category of given id
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with given id!!"));
 
@@ -72,28 +72,28 @@ public class CategoryServiceImpl implements CategoryService {
         Category updatedCategory = categoryRepository.save(category);
 
         CategoryDto categoryDto1 = mapper.map(updatedCategory, CategoryDto.class);
-        logger.info("Execution completed of  update method in CategoryServiceImpl ");
+        logger.info("Execution completed of  update method in CategoryServiceImpl for id "+categoryId);
         return categoryDto1;
     }
 
     @Override
     /**
      * @author Deepali
-     * @apiNote This method deletes existing Category
+     * @implNote  This method deletes existing Category
      *
      */
     public void delete(String categoryId) {
 
-        logger.info("Initializing delete method of CategoryServiceImpl");
+        logger.info("Initializing delete method of CategoryServiceImpl for id"+categoryId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with given id!!"));
         categoryRepository.delete(category);
-        logger.info("Execution completed of  delete  method in CategoryServiceImpl");
+        logger.info("Execution completed of  delete  method in CategoryServiceImpl for id"+categoryId);
 
     }
 
     /**
      * @author Deepali
-     * @apiNote This method retrieves all categories from database
+     * @implNote  This method retrieves all categories from database
      *
      */
     @Override
@@ -113,14 +113,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * @author Deepali
-     * @apiNote This method retrieves category by specified id
+     * @implNote  This method retrieves category by specified id
      * */
     @Override
     public CategoryDto get(String categoryId) {
 
-        logger.info("Initializing get method of CategoryServiceImpl");
+        logger.info("Initializing get method of CategoryServiceImpl for id"+categoryId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with given id!!"));
         CategoryDto categoryDto = mapper.map(category, CategoryDto.class);
+        logger.info("Execution completed get method of CategoryServiceImpl for id"+categoryId);
         return categoryDto;
 
     }

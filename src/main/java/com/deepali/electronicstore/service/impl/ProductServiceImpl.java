@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      *
      * @author Deepali
-     * @apiNote Creates new Product in database
+     * @implNote  Creates new Product in database
      */
     @Override
     public ProductDto create(ProductDto productDto) {
@@ -61,12 +61,12 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * @author Deepali
-     * @apiNote Updates existing Product from database
+     * @implNote  Updates existing Product from database
      */
     @Override
     public ProductDto update(ProductDto productDto, String productId) {
 
-        logger.info("Initializing update method of ProductServiceImpl");
+        logger.info("Initializing update method of ProductServiceImpl for id"+productId);
         //fetch the product of given id
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with given id"));
 
@@ -81,43 +81,43 @@ public class ProductServiceImpl implements ProductService {
 
         Product updatedProduct = productRepository.save(product);
 
-        logger.info("Execution completed of update method in ProductServiceImpl");
+        logger.info("Execution completed of update method in ProductServiceImpl for id"+productId);
 
         return mapper.map(updatedProduct,ProductDto.class);
     }
 
     /**
      * @author Deepali
-     * @apiNote Deletes Product from database
+     * @implNote  Deletes Product from database
      */
     @Override
     public void delete(String productId) {
 
-        logger.info("Initializing delete method of ProductServiceImpl");
+        logger.info("Initializing delete method of ProductServiceImpl for id"+productId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with given id"));
         productRepository.delete(product);
-        logger.info("Execution completed of delete method in ProductServiceImpl");
+        logger.info("Execution completed of delete method in ProductServiceImpl for id"+productId);
 
     }
 
     /**
      *
      * @author Deepali
-     * @apiNote Fetch the product from database
+     * @implNote  Fetch the product from database
      */
     @Override
     public ProductDto get(String productId) {
 
-        logger.info("Initializing get method of ProductServiceImpl");
+        logger.info("Initializing get method of ProductServiceImpl for id"+productId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with given id"));
-        logger.info("Execution completed of get method in ProductServiceImpl");
+        logger.info("Execution completed of get method in ProductServiceImpl for id"+productId);
 
         return mapper.map(product,ProductDto.class);
     }
 
     /**
      * @author Deepali
-     * @apiNote Fetch all Products from Database
+     * @implNote  Fetch all Products from Database
      */
 
     @Override
@@ -136,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * @author Deepali
-     * @apiNote Fetch all live Products from database
+     * @implNote  Fetch all live Products from database
      */
     @Override
     public PageableResponse<ProductDto> getAllLive(int pageNumber,int pageSize,String sortBy,String sortDir) {
@@ -155,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * @author Deepali
-     * @apiNote Search the Products from by specified Title
+     * @implNote  Search the Products from by specified Title
      */
     @Override
     public PageableResponse<ProductDto> searchByTitle(String subTitle,int pageNumber,int pageSize,String sortBy,String sortDir) {
@@ -175,12 +175,12 @@ public class ProductServiceImpl implements ProductService {
     //create product with category
     /**
      * @author Deepali
-     * @apiNote Creates Products with Category
+     * @implNote  Creates Products with Category
      */
     @Override
     public ProductDto createWithCategory(ProductDto productDto, String categoryId) {
 
-        logger.info("Initializing crateWithCategory method of ProductServiceImpl");
+        logger.info("Initializing crateWithCategory method of ProductServiceImpl for id"+categoryId);
         //fetch the category
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with given id"));
 
@@ -193,30 +193,30 @@ public class ProductServiceImpl implements ProductService {
         Product product = mapper.map(productDto, Product.class);
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
-        logger.info("Execution completed of crateWithCategory method in ProductServiceImpl");
+        logger.info("Execution completed of crateWithCategory method in ProductServiceImpl for id"+categoryId);
         return mapper.map(savedProduct,ProductDto.class);
     }
 
     /**
      * @author Deepali
-     * @apiNote update Products by given Category
+     * @implNote  update Products by given Category
      */
     @Override
     public ProductDto updateCategory(String productId, String categoryId) {
 
-        logger.info("Initializing updateCategory method of ProductServiceImpl");
+        logger.info("Initializing updateCategory method of ProductServiceImpl for id"+categoryId);
         //product fetch
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product with this id not found!!"));
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not Found!!"));
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
-        logger.info("Execution completed of updateCategory method in ProductServiceImpl");
+        logger.info("Execution completed of updateCategory method in ProductServiceImpl for id"+categoryId);
         return mapper.map(savedProduct,ProductDto.class);
     }
 
     /**
      * @author Deepali
-     * @apiNote Fetch all Products of given Category
+     * @implNote  Fetch all Products of given Category
      */
     @Override
     public PageableResponse<ProductDto> getAllOfCategory(String categoryId,int pageNumber,int pageSize,String sortBy,String sortDir) {

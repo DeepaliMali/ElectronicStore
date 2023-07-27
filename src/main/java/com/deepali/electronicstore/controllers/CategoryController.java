@@ -69,9 +69,9 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto,
                                                       @PathVariable String categoryId )
     {
-        logger.info("Initializing updateCategory method of CategoryController");
+        logger.info("Initializing updateCategory method of CategoryController for id"+categoryId);
         CategoryDto updatedCategory = categoryService.update(categoryDto, categoryId);
-        logger.info("Execution completed of updateCategory method in CategoryController");
+        logger.info("Execution completed of updateCategory method in CategoryController for id"+categoryId);
         return new ResponseEntity<>(updatedCategory,HttpStatus.OK);
 
     }
@@ -86,10 +86,10 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiResponseMessage> deleteCategory(@PathVariable String categoryId)
     {
-        logger.info("Initializing deleteCategory method of CategoryController");
+        logger.info("Initializing deleteCategory method of CategoryController for id"+categoryId);
         categoryService.delete(categoryId);
         ApiResponseMessage responseMessage = ApiResponseMessage.builder().message("Category Deleted Successfully !!").status(HttpStatus.OK).success(true).build();
-        logger.info("Execution completed of deleteCategory method in CategoryController");
+        logger.info("Execution completed of deleteCategory method in CategoryController for id"+categoryId);
         return new ResponseEntity<>(responseMessage,HttpStatus.OK);
     }
 
@@ -124,9 +124,9 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getSingle(@PathVariable String categoryId)
     {
-        logger.info("Initializing getSingle method of CategoryController");
+        logger.info("Initializing getSingle method of CategoryController for id"+categoryId);
         CategoryDto categoryDto = categoryService.get(categoryId);
-        logger.info("Execution completed of getSingle method in CategoryController");
+        logger.info("Execution completed of getSingle method in CategoryController for id"+categoryId);
         return new ResponseEntity<>(categoryDto,HttpStatus.OK);
     }
 
@@ -140,9 +140,9 @@ public class CategoryController {
                                             @PathVariable("categoryId") String categoryId,
                                             @RequestBody ProductDto productDto)
     {
-        logger.info("Initializing createProductWithCategory method of ProductController");
+        logger.info("Initializing createProductWithCategory method of ProductController for id"+categoryId);
         ProductDto productWithCategory = productService.createWithCategory(productDto, categoryId);
-        logger.info("Execution Completed of method createProductWithCategory");
+        logger.info("Execution Completed of method createProductWithCategory for id"+categoryId);
         return new ResponseEntity<>(productWithCategory,HttpStatus.CREATED);
     }
 
@@ -156,9 +156,9 @@ public class CategoryController {
             @PathVariable String categoryId,
             @PathVariable String productId)
     {
-        logger.info("Initializing updateCategoryProduct method of ProductController");
+        logger.info("Initializing updateCategoryProduct method of ProductController for id"+categoryId);
         ProductDto productDto = productService.updateCategory(productId, categoryId);
-        logger.info("Execution Completed of method updateCategoryProduct");
+        logger.info("Execution Completed of method updateCategoryProduct for id"+categoryId);
         return new ResponseEntity<>(productDto,HttpStatus.OK);
     }
 
@@ -190,7 +190,7 @@ public class CategoryController {
     public ResponseEntity<ImageResponse> uploadCategoryImage(@RequestPart("categoryImage") MultipartFile image,
                                                          @PathVariable String categoryId) throws IOException {
 
-        logger.info("Initializing uploadCategoryImage method of UserController");
+        logger.info("Initializing uploadCategoryImage method of UserController for id"+categoryId);
         String imageName = fileService.uploadFile(image, imageUploadPath);
 
         CategoryDto category = categoryService.get(categoryId);
@@ -199,7 +199,7 @@ public class CategoryController {
         CategoryDto categoryDto = categoryService.update(category, categoryId);
 
         ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).message("Image Uploaded Successfully").build();
-        logger.info("Execution completed of uploadCategoryImage method");
+        logger.info("Execution completed of uploadCategoryImage method for id"+categoryId);
         return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
@@ -212,13 +212,13 @@ public class CategoryController {
     @GetMapping(value = "image/{categoryId}")
     public  void serveCategoryImage(@PathVariable String categoryId, HttpServletResponse response) throws IOException {
 
-        logger.info("Initializing serveCategoryImage method of UserController");
+        logger.info("Initializing serveCategoryImage method of UserController for id"+categoryId);
         CategoryDto category = categoryService.get(categoryId);
         logger.info("User Image:{}",category.getCoverImage());
         InputStream resource = fileService.getResource(imageUploadPath, category.getCoverImage());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
-        logger.info("Execution completed of serveCategoryImage method");
+        logger.info("Execution completed of serveCategoryImage method for id"+categoryId);
 
 
 

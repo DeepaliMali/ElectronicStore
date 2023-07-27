@@ -63,9 +63,9 @@ public class ProductController {
     @PutMapping("{productId}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable String productId, @RequestBody ProductDto productDto)
     {
-        logger.info("Initializing updateProduct method of ProductController");
+        logger.info("Initializing updateProduct method of ProductController for id"+productId);
         ProductDto updatedProduct = productService.update(productDto,productId);
-        logger.info("Execution completed of updateProduct method of ProductController");
+        logger.info("Execution completed of updateProduct method of ProductController for id"+productId);
         return new ResponseEntity<>(updatedProduct, HttpStatus.CREATED);
 
     }
@@ -80,10 +80,10 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<ApiResponseMessage> delete(@PathVariable String productId)
     {
-        logger.info("Initializing delete method of ProductController");
+        logger.info("Initializing delete method of ProductController for id"+productId);
         productService.delete(productId);
         ApiResponseMessage responseMessage = ApiResponseMessage.builder().message(AppConstants.DELETE_PRODUCT).status(HttpStatus.OK).success(true).build();
-        logger.info("Execution completed of delete method of ProductController");
+        logger.info("Execution completed of delete method of ProductController for id"+productId);
         return new ResponseEntity<>(responseMessage,HttpStatus.OK);
     }
 
@@ -97,9 +97,9 @@ public class ProductController {
     @GetMapping("{productId}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable String productId)
     {
-        logger.info("Initializing createProduct method of ProductController");
+        logger.info("Initializing createProduct method of ProductController for id"+productId);
         ProductDto productDto = productService.get(productId);
-        logger.info("Execution completed of createProduct method of ProductController");
+        logger.info("Execution completed of createProduct method of ProductController for id"+productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
 
     }

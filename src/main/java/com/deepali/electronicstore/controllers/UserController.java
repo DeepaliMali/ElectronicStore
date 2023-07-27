@@ -121,7 +121,7 @@ public class UserController {
     {
         logger.info("Initializing getUserById method for id:"+userId);
         UserDto userById = userService.getUserById(userId);
-        logger.info("Execution completed of method getUserById for id"+userById);
+        logger.info("Execution completed of method getUserById for id"+userId);
         return new ResponseEntity<>(userById,HttpStatus.OK);
     }
 
@@ -135,7 +135,7 @@ public class UserController {
     {
         logger.info("Initializing getUserByEmail method for email:"+email);
         UserDto userByEmail = userService.getUserByEmail(email);
-        logger.info("Execution completed of method getUserByEmail for email"+userByEmail);
+        logger.info("Execution completed of method getUserByEmail for email"+email);
         return new ResponseEntity<>(userByEmail,HttpStatus.OK);
     }
 
@@ -162,7 +162,7 @@ public class UserController {
     @PostMapping("/image/{userId}")
     public ResponseEntity<ImageResponse> uploadUserImage(@RequestPart("userImage") MultipartFile image,
                                                      @PathVariable String userId) throws IOException {
-        logger.info("Initializing uploadUserImage method of UserController");
+        logger.info("Initializing uploadUserImage method of UserController for user"+userId);
         String imageName = fileService.uploadFile(image, imageUploadPath);
 
         UserDto user = userService.getUserById(userId);
@@ -171,7 +171,7 @@ public class UserController {
         UserDto userDto = userService.updateUser(user,userId);
 
         ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).message("Image Uploaded Successfully").build();
-        logger.info("Execution completed of uploadUserImage method");
+        logger.info("Execution completed of uploadUserImage method for user"+userId);
         return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
@@ -184,13 +184,13 @@ public class UserController {
     @GetMapping(value = "image/{userId}")
     public  void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
 
-        logger.info("Initializing serveUserImage method of UserController");
+        logger.info("Initializing serveUserImage method of UserController for user"+userId);
         UserDto user = userService.getUserById(userId);
         logger.info("User Image:{}",user.getImageName());
         InputStream resource = fileService.getResource(imageUploadPath, user.getImageName());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
-        logger.info("Execution completed of serveUserImage method");
+        logger.info("Execution completed of serveUserImage method for user"+userId);
 
 
 

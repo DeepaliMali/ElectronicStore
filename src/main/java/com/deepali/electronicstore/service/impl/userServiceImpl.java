@@ -46,7 +46,7 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Creates new User
+     * @implNote  Creates new User
      */
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -65,7 +65,7 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Updates existing user
+     * @implNote  Updates existing user
      */
     @Override
     public UserDto updateUser(UserDto userDto, String userId) {
@@ -86,7 +86,7 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Deletes User from Database
+     * @implNote  Deletes User from Database
      */
     @Override
     public void deleteUser(String userId) {
@@ -122,7 +122,7 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Retrieves list of all users from Database
+     * @implNote  Retrieves list of all users from Database
      */
     @Override
     public PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir) {
@@ -142,7 +142,7 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Retrieves a user by specified id
+     * @implNote  Retrieves a user by specified id
      */
     @Override
     public UserDto getUserById(String userId) {
@@ -155,7 +155,7 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Retrieves a user by specified email
+     * @implNote  Retrieves a user by specified email
      */
     @Override
     public UserDto getUserByEmail(String email) {
@@ -168,15 +168,15 @@ public class userServiceImpl implements UserService {
 
     /**
      * @author Deepali
-     * @apiNote Retrieves a user by specified keyword
+     * @implNote  Retrieves a user by specified keyword
      */
     @Override
     public List<UserDto> searchUser(String keyword) {
 
-        logger.info("Initializing  searchUser method of service");
+        logger.info("Initializing  searchUser method of service"+keyword);
         List<User> users = userRepository.findByNameContaining(keyword);
         List<UserDto> dtoList = users.stream().map(user -> mapper.map(user,UserDto.class)).collect(Collectors.toList());
-        logger.info("Execution completed of searchUser method of service");
+        logger.info("Execution completed of searchUser method of service"+keyword);
         return dtoList;
     }
 
