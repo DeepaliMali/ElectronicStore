@@ -1,6 +1,7 @@
 package com.deepali.electronicstore.Service;
 
 
+import com.deepali.electronicstore.dto.PageableResponse;
 import com.deepali.electronicstore.dto.UserDto;
 import com.deepali.electronicstore.entities.User;
 import com.deepali.electronicstore.repository.UserRepository;
@@ -17,6 +18,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -39,7 +45,7 @@ public class UserServiceTest {
                 .name("Deepali")
                 .email("shewale.deeps@gmail.com")
                 .about("Thi is testing create method")
-                .gender("Male")
+                .gender("Female")
                 .imageName("abc.png")
                 .password("abcd")
                 .build();
@@ -64,8 +70,71 @@ public class UserServiceTest {
     @Test
     public void updateUserTest()
     {
+        String userId="dfhgr";
+        UserDto userDto = UserDto.builder()
+                .name("Deepali Mali")
+                .email("shewale.deeps@gmail.com")
+                .about("This is testing update method")
+                .gender("Female")
+                .imageName("xyz.png")
+                .build();
+
+        Mockito.when(userRepository.findById(Mockito.anyString())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
+
+        UserDto updatedUser = userService.updateUser(userDto, userId);
+        System.out.println(updatedUser.getName());
+
+        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(userDto.getName(),updatedUser.getName(),"Name is not Validate");
 
     }
+
+    //delete user
+    @Test
+    public void deleteUserTest()
+    {
+        String userId="userIdabc";
+
+        Mockito.when(userRepository.findById("userIdabc")).thenReturn(Optional.of(user));
+        userService.deleteUser(userId);
+        Mockito.verify(userRepository,Mockito.times(1)).delete(user);
+    }
+
+
+    //get All Users
+
+    @Test
+    public void getAllUsersTest()
+    {
+      User  user1 = User.builder()
+                .name("Dinesh")
+                .email("shewale.deeps@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Male")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+       User user2 = User.builder()
+                .name("Durva")
+                .email("shewale.deeps@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Female")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+        List<User> userList= Arrays.asList(user,user1,user2);
+        Page<User> page=new PageImpl<>(userList);
+        Mockito.when(userRepository.findAll((Pageable) Mockito.any())).thenReturn(page);
+
+        PageableResponse<UserDto> allUsers = userService.getAllUsers(1,2,"name","ascending");
+        Assertions.assertEquals(3,allUsers.getContent().size());
+    }
+
+
+
 
 
 
