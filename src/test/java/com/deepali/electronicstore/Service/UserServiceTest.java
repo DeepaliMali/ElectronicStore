@@ -134,6 +134,71 @@ public class UserServiceTest {
     }
 
 
+    //get user by id
+    @Test
+    public void getUserByIdTest()
+    {
+        String userId="userIdTest";
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        //actual call of service method
+        UserDto userDto = userService.getUserById(userId);
+
+        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(user.getName(),userDto.getName(),"Name not matched");
+
+
+    }
+
+    //get user by email
+    @Test
+    public void getUserByEmailTest()
+    {
+        String emailId="shewale.deeps@gmail.com";
+        Mockito.when(userRepository.findByEmail(emailId)).thenReturn(Optional.of(user));
+
+        UserDto userDto = userService.getUserByEmail(emailId);
+        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(user.getEmail(),userDto.getEmail(),"Email not matched");
+    }
+
+    //search user
+    @Test
+    public void searchUserTest()
+    {
+        User  user1 = User.builder()
+                .name("Dinesh")
+                .email("shewale.deeps@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Male")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+        User  user2 = User.builder()
+                .name("Durva")
+                .email("durva@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Female")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+        User  user3 = User.builder()
+                .name("Deepali")
+                .email("shewale.deeps@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Female")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+        String keywords="Deepali";
+
+        Mockito.when(userRepository.findByNameContaining(keywords)).thenReturn(Arrays.asList(user,user1,user2,user3));
+        List<UserDto> userDtos = userService.searchUser(keywords);
+        Assertions.assertEquals(4,userDtos.size(),"Size not matched !!");
+    }
 
 
 
