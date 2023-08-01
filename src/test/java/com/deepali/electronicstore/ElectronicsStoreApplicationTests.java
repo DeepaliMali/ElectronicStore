@@ -8,6 +8,8 @@ class ElectronicsStoreApplicationTests {
 
 	@Test
 	void contextLoads() {
+
+		System.out.println("Testing");
 	}
 
 }
