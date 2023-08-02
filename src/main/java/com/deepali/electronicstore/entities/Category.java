@@ -1,10 +1,7 @@
 package com.deepali.electronicstore.entities;
 
 import ch.qos.logback.classic.db.names.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name="categories")
 public class Category {
 
