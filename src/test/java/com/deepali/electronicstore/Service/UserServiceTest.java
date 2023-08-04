@@ -36,7 +36,9 @@ public class UserServiceTest {
     @Autowired
     private ModelMapper mapper;
 
-    User user;
+    User user,user1,user2;
+
+    UserDto userDto;
 
     @BeforeEach
     public void init()
@@ -49,6 +51,34 @@ public class UserServiceTest {
                 .imageName("abc.png")
                 .password("abcd")
                 .build();
+
+        User  user1 = User.builder()
+                .name("Dinesh")
+                .email("shewale.deeps@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Male")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+        User user2 = User.builder()
+                .name("Durva")
+                .email("shewale.deeps@gmail.com")
+                .about("Thi is testing create method")
+                .gender("Female")
+                .imageName("abc.png")
+                .password("abcd")
+                .build();
+
+
+        UserDto userDto = UserDto.builder()
+                .name("Deepali Mali")
+                .email("shewale.deeps@gmail.com")
+                .about("This is testing update method")
+                .gender("Female")
+                .imageName("xyz.png")
+                .build();
+
 
     }
 
@@ -71,13 +101,6 @@ public class UserServiceTest {
     public void updateUserTest()
     {
         String userId="dfhgr";
-        UserDto userDto = UserDto.builder()
-                .name("Deepali Mali")
-                .email("shewale.deeps@gmail.com")
-                .about("This is testing update method")
-                .gender("Female")
-                .imageName("xyz.png")
-                .build();
 
         Mockito.when(userRepository.findById(Mockito.anyString())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
@@ -107,24 +130,6 @@ public class UserServiceTest {
     @Test
     public void getAllUsersTest()
     {
-      User  user1 = User.builder()
-                .name("Dinesh")
-                .email("shewale.deeps@gmail.com")
-                .about("Thi is testing create method")
-                .gender("Male")
-                .imageName("abc.png")
-                .password("abcd")
-                .build();
-
-       User user2 = User.builder()
-                .name("Durva")
-                .email("shewale.deeps@gmail.com")
-                .about("Thi is testing create method")
-                .gender("Female")
-                .imageName("abc.png")
-                .password("abcd")
-                .build();
-
         List<User> userList= Arrays.asList(user,user1,user2);
         Page<User> page=new PageImpl<>(userList);
         Mockito.when(userRepository.findAll((Pageable) Mockito.any())).thenReturn(page);

@@ -49,6 +49,8 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    UserDto object1,object2,object3,object4;
+
 
     @BeforeEach
     public void init() {
@@ -60,6 +62,12 @@ public class UserControllerTest {
                 .imageName("abc.png")
                 .password("abcd")
                 .build();
+
+         object1 = UserDto.builder().name("Deepali").email("shewale.deeps@gmail.com").password("deepali123").about("Test").build();
+         object2 = UserDto.builder().name("Dinesh").email("ddm@gmail.com").password("ddm123").about("Test").build();
+         object3 = UserDto.builder().name("Durva").email("durva@gmail.com").password("durva123").about("Test").build();
+         object4 = UserDto.builder().name("Chinmayee").email("chinmayee@gmail.com").password("chinmayee123").about("Test").build();
+
     }
 
     @Test
@@ -118,10 +126,6 @@ public class UserControllerTest {
     @Test
     public void getAllUsersTest() throws Exception {
 
-        UserDto object1 = UserDto.builder().name("Deepali").email("shewale.deeps@gmail.com").password("deepali123").about("Test").build();
-        UserDto object2 = UserDto.builder().name("Dinesh").email("ddm@gmail.com").password("ddm123").about("Test").build();
-        UserDto object3 = UserDto.builder().name("Durva").email("durva@gmail.com").password("durva123").about("Test").build();
-        UserDto object4 = UserDto.builder().name("Chinmayee").email("chinmayee@gmail.com").password("chinmayee123").about("Test").build();
 
         PageableResponse<UserDto> pageableResponse = new PageableResponse<>();
         pageableResponse.setContent(Arrays.asList(object1, object2, object3, object4));
@@ -192,10 +196,6 @@ public class UserControllerTest {
     //search user
     @Test
     public void searchUserTest() throws Exception {
-        UserDto object1 = UserDto.builder().name("Deepali").email("shewale.deeps@gmail.com").password("deepali123").about("Test").build();
-        UserDto object2 = UserDto.builder().name("Dinesh").email("ddm@gmail.com").password("ddm123").about("Test").build();
-        UserDto object3 = UserDto.builder().name("Durva").email("durva@gmail.com").password("durva123").about("Test").build();
-        UserDto object4 = UserDto.builder().name("Chinmayee").email("chinmayee@gmail.com").password("chinmayee123").about("Test").build();
 
         String keyword = "s";
 
