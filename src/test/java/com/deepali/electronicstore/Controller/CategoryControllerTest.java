@@ -49,7 +49,10 @@ public class CategoryControllerTest {
     private FileService fileService;
 
     Category category;
+
+    CategoryDto category1,category2,category3;
     Product product;
+    ProductDto product1,product2,product3;
 
 
     @Autowired
@@ -58,13 +61,14 @@ public class CategoryControllerTest {
     @BeforeEach
     public void init()
     {
-        category= Category.builder()
-                .title("Mobiles")
-                .coverImage("abc.png")
-                .description("This category related to Mobiles")
-                .build();
+        category= Category.builder().title("Mobiles").coverImage("abc.png").description("This category related to Mobiles").build();
 
-         product=Product.builder()
+        CategoryDto category1= CategoryDto.builder().title("Mobiles").coverImage("mobile.png").description("This category related to Mobiles").build();
+        CategoryDto category2= CategoryDto.builder().title("TV").coverImage("tv.png").description("This category related to TV's").build();
+        CategoryDto category3= CategoryDto.builder().title("AC").coverImage("ac.png").description("This category related to AC units").build();
+
+
+        product=Product.builder()
                 .title("Iphone")
                 .description("related to mobile category")
                 .category(category)
@@ -73,6 +77,39 @@ public class CategoryControllerTest {
                 .addedDate(new Date())
                 .quantity(5)
                 .productImageName("abc.ong")
+                .build();
+
+        ProductDto product1=ProductDto.builder()
+                .title("Iphone")
+                .description("related to mobile category")
+                .category(new CategoryDto())
+                .price(80000).discountedPrice(70000)
+                .stock(true).live(true)
+                .addedDate(new Date())
+                .quantity(5)
+                .productImageName("abc.ong")
+                .build();
+
+        ProductDto product2=ProductDto.builder()
+                .title("samsung TV")
+                .description("related to TV category")
+                .category(new CategoryDto())
+                .price(80000).discountedPrice(50000)
+                .stock(true).live(true)
+                .addedDate(new Date())
+                .quantity(5)
+                .productImageName("tv.ong")
+                .build();
+
+        ProductDto product3=ProductDto.builder()
+                .title("Headphone")
+                .description("related to headphone category")
+                .category(new CategoryDto())
+                .price(25000).discountedPrice(20000)
+                .stock(true).live(true)
+                .addedDate(new Date())
+                .quantity(5)
+                .productImageName("headph.png")
                 .build();
 
 
@@ -146,9 +183,6 @@ public class CategoryControllerTest {
     @Test
     public void getAllCategoriesTest() throws Exception {
 
-        CategoryDto category1= CategoryDto.builder().title("Mobiles").coverImage("mobile.png").description("This category related to Mobiles").build();
-        CategoryDto category2= CategoryDto.builder().title("TV").coverImage("tv.png").description("This category related to TV's").build();
-        CategoryDto category3= CategoryDto.builder().title("AC").coverImage("ac.png").description("This category related to AC units").build();
 
         PageableResponse<CategoryDto> pageableResponse = new PageableResponse<>();
         pageableResponse.setContent(Arrays.asList(category1,category2,category3));
@@ -237,39 +271,6 @@ public class CategoryControllerTest {
 
         String categoryId="categoryTest";
 
-        ProductDto product1=ProductDto.builder()
-                .title("Iphone")
-                .description("related to mobile category")
-                .category(new CategoryDto())
-                .price(80000).discountedPrice(70000)
-                .stock(true).live(true)
-                .addedDate(new Date())
-                .quantity(5)
-                .productImageName("abc.ong")
-                .build();
-
-        ProductDto product2=ProductDto.builder()
-                .title("samsung TV")
-                .description("related to TV category")
-                .category(new CategoryDto())
-                .price(80000).discountedPrice(50000)
-                .stock(true).live(true)
-                .addedDate(new Date())
-                .quantity(5)
-                .productImageName("tv.ong")
-                .build();
-
-        ProductDto product3=ProductDto.builder()
-                .title("Headphone")
-                .description("related to headphone category")
-                .category(new CategoryDto())
-                .price(25000).discountedPrice(20000)
-                .stock(true).live(true)
-                .addedDate(new Date())
-                .quantity(5)
-                .productImageName("headph.png")
-                .build();
-
         PageableResponse<ProductDto> pageableResponse = new PageableResponse<>();
         pageableResponse.setContent(Arrays.asList(product1,product2,product3));
         pageableResponse.setLastPage(false);
@@ -288,5 +289,7 @@ public class CategoryControllerTest {
 
 
     }
+
+
 
 }

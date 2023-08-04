@@ -35,7 +35,7 @@ public class CategoryServiceTest {
     @Autowired
     private ModelMapper mapper;
 
-    Category category;
+    Category category,category1,category2;
 
     @BeforeEach
     public void init()
@@ -44,6 +44,18 @@ public class CategoryServiceTest {
                 .title("Mobiles")
                 .coverImage("abc.png")
                 .description("This category related to Mobiles")
+                .build();
+
+         category1=Category.builder()
+                .title("Mobiles")
+                .coverImage("abc.png")
+                .description("This category related to Mobiles")
+                .build();
+
+         category2=Category.builder()
+                .title("TV")
+                .coverImage("abc.png")
+                .description("This category related to TV")
                 .build();
 
     }
@@ -93,17 +105,6 @@ public class CategoryServiceTest {
     @Test
     public void getAllCategoryTest()
     {
-       Category category1=Category.builder()
-                .title("Mobiles")
-                .coverImage("abc.png")
-                .description("This category related to Mobiles")
-                .build();
-
-       Category category2=Category.builder()
-                .title("TV")
-                .coverImage("abc.png")
-                .description("This category related to TV")
-                .build();
 
         List<Category> categoryList = Arrays.asList(category, category1, category2);
         Page<Category> page=new PageImpl<>(categoryList);
@@ -129,6 +130,8 @@ public class CategoryServiceTest {
 
 
     }
+
+
 
 
 
